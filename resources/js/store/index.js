@@ -1,12 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-//import from module
+import AuthStore from './modules/auth'
+import PanelStore from './modules/panels'
 
-Vue.use(vuex);
+Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
     modules: {
-        // auth
+        auth: AuthStore,
+        panel: PanelStore
     }
-})
+});
+
+Vue.prototype.$store = store;
+
+export default store;

@@ -9,8 +9,12 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import Vue from 'vue';
+import VModal from 'vue-js-modal'
 
-import router from './router/index';
+import router from './router';
+import store from './store';
+
+Vue.use(VModal);
 
 
 /**
@@ -32,5 +36,6 @@ import router from './router/index';
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    store
 });

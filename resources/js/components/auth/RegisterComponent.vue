@@ -23,7 +23,7 @@
                             <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" @keyup="validatePass" required>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-primary" @click="toCard">Registrarse</button>
+                            <AuthButton @on:click="newUser" label="Registrate"/>
                             <span>Si ya tienes una cuenta inicia sesion <button type="button" class="btn btn-link" @click="toLoginForm">aqui</button></span>
                         </div>
                     </div>
@@ -34,6 +34,10 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue'
+import { mapActions } from 'vuex'
+import Swal from 'sweetalert2'
+
     export default {
         data() {
             return {
@@ -45,12 +49,11 @@
                 confirmPassword: ''
             }
         },
+        components: {
+            AuthButton: defineAsyncComponent(() => import('../shares/AuthButton.vue')),
+        },
         methods: {
-            toCard() {
-                //this.$router.push({name: 'card'});
-                console.log({message: 'listo para guardar', data: this.form});
-                // this.$axios.post('')
-            },
+            ...mapActions('auth', ['createUser']),
             toLoginForm() {
                 this.$router.push({name: 'login'})
             },
@@ -60,6 +63,29 @@
                     return
                 } else {
                     console.log('great')
+                }
+            },
+            async newUser() {
+                const status = await this.createUser(this.form)
+                if (status === 'Created') {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Registro exitoso, ahora puede iniciar sesion'
+                    })
+
+                    this.$router.push({name: 'login'})
                 }
             }
         }
