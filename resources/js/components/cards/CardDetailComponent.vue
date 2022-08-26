@@ -4,55 +4,66 @@
             <h5 class="card-title">
                 {{ card.name }}
             </h5>
+           <select class="form-select" aria-label="panels select" @change="changeCardPanel">
+                <option selected>Mover</option>
+                <option v-for="item in panels" :key="item.id" :value="item.id">{{ item.name }}</option>
+            </select>
             <div class="btn-group btn-group-sm" role="group" aria-label="...">
                 <button type="button" class="btn btn-danger" @click="remove(card.id)">Eliminar</button>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        Mover
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <li v-for="item in panels" :key="item.id"><a class="dropdown-item" href="#">{{ item.name }}</a></li>
-                    </ul>
-                </div>
+                <button type="button" class="btn btn-success" @click="edit(card.id)">Editar</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-import Swal from 'sweetalert2'
+import { mapActions, mapState } from 'vuex';
+import Swal from 'sweetalert2';
 
-    export default {
-        props: {
-            card: {
-                type: Object,
-                default: null
-            },
-        },
-        computed: {
-           ...mapState('panel', ['panels'])
-        },
-        methods: {
-            ...mapActions('panel', ['deleteCard']),
-            async remove(id) {
-                console.log(id)
-                const { isConfirmed } = await Swal.fire({
-                    title: 'Esta Seguro?',
-                    text: 'Una vez borrado, no se puede recuperar',
-                    showDenyButton: true,
-                    confirmButtonText: 'Si, estoy seguro'
-                })
-                if (isConfirmed) {
-                    const resp = await this.deleteCard(id)
-                    console.log(resp)
-                }
-            },
-            edit() {
-                this.$modal.show('example')
+export default {
+    data() {
+        return {
+            user: JSON.parse(localStorage.getItem('user'))
+        }
+    },
+    props: {
+        card: {
+            type: Object,
+            default: null
+        }
+    },
+    computed: {
+        ...mapState('panel', ['panels'])
+    },
+    methods: {
+        ...mapActions('panel', ['deleteCard', 'updateCard', 'setCard']),
+        async remove(id) {
+            console.log(id)
+            const { isConfirmed } = await Swal.fire({
+                title: 'Esta Seguro?',
+                text: 'Una vez borrado, no se puede recuperar',
+                showDenyButton: true,
+                confirmButtonText: 'Si, estoy seguro'
+            });
+            if (isConfirmed) {
+                await this.deleteCard(id)
+                location.reload()
             }
+        },
+        async edit() {
+            await this.setCard(this.card)
+            this.$modal.show('example')
+        },
+        async changeCardPanel($event) {
+            let card = Object.assign(this.card)
+            card.panel_id = $event.target.value
+            delete card.created_at
+            delete card.updated_at
+            const resp = await this.updateCard(card)
+            location.reload()
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
