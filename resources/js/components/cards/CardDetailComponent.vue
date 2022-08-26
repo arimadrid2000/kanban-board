@@ -1,18 +1,30 @@
 <template>
     <div>
-         <div class="card p-2">
-            <h5 class="card-title">
-                {{ card.name }}
-            </h5>
-           <select class="form-select" aria-label="panels select" @change="changeCardPanel">
-                <option selected>Mover</option>
-                <option v-for="item in panels" :key="item.id" :value="item.id">{{ item.name }}</option>
-            </select>
-            <div class="btn-group btn-group-sm" role="group" aria-label="...">
-                <button type="button" class="btn btn-danger" @click="remove(card.id)">Eliminar</button>
-                <button type="button" class="btn btn-success" @click="edit(card.id)">Editar</button>
-            </div>
-        </div>
+        <md-card class="md-primary" md-with-hover>
+            <md-ripple>
+                <md-card-header>
+                    <div class="md-title">{{ card.name }}</div>
+                </md-card-header>
+                <md-card-actions md-alignment="space-between">
+                    <md-button @click="remove(card.id)">Eliminar</md-button>
+                    <md-button @click="edit(card.id)">Editar</md-button>
+                    <md-menu md-size="big" md-direction="bottom-end">
+                        <md-button md-menu-trigger>
+                            Mover
+                        </md-button>
+                        <md-menu-content>
+                            <md-menu-item v-for="item in panels" :key="item.id" @click="changeCardPanel(item.id)">
+                            <span>{{ item.name }}</span>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </md-card-actions>
+            </md-ripple>
+        </md-card>
+        <md-dialog-alert
+            :md-active.sync="showPopUp"
+            md-content="Felicitaciones por lograrlo!"
+            md-confirm-text="Cerrar" />
     </div>
 </template>
 
@@ -23,7 +35,8 @@ import Swal from 'sweetalert2';
 export default {
     data() {
         return {
-            user: JSON.parse(localStorage.getItem('user'))
+            user: JSON.parse(localStorage.getItem('user')),
+            showPopUp: false
         }
     },
     props: {
@@ -54,12 +67,16 @@ export default {
             await this.setCard(this.card)
             this.$modal.show('example')
         },
-        async changeCardPanel($event) {
+        async changeCardPanel(id) {
             let card = Object.assign(this.card)
-            card.panel_id = $event.target.value
+            card.panel_id = id
+            const selectedPanel = this.panels.find(panel => panel.id === id)
+            if (selectedPanel.name === 'Done') {
+                this.showPopUp = true
+            }
             delete card.created_at
             delete card.updated_at
-            const resp = await this.updateCard(card)
+            await this.updateCard(card)
             location.reload()
         }
     }
