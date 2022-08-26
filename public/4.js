@@ -93,21 +93,24 @@ var render = function render() {
       staticClass: "card"
     }, [_c("div", {
       staticClass: "card-header"
-    }, [_c("span", [_vm._v("\n                        " + _vm._s(item.name) + "\n                    ")])]), _vm._v(" "), _c("div", {
+    }, [_c("div", {
+      staticClass: "row justify-content-between"
+    }, [_c("span", {
+      staticClass: "md-display-1"
+    }, [_vm._v("\n                            " + _vm._s(item.name) + "\n                        ")]), _vm._v(" "), _c("span", {
+      staticClass: "md-body-1"
+    }, [_vm._v(_vm._s(item.cards.length))])])]), _vm._v(" "), _c("div", {
       staticClass: "card-body"
     }, [_c("div", {
-      staticClass: "row justify-content-center"
-    }, [_c("button", {
-      staticClass: "btn btn-link btn-sm",
-      attrs: {
-        type: "button"
-      },
+      staticClass: "row justify-content-end"
+    }, [_c("md-button", {
+      staticClass: "md-fab md-mini md-icon-button md-raised md-primary mb-4",
       on: {
         click: function click($event) {
           return _vm.addCard(item.id);
         }
       }
-    }, [_vm._v("Agregar tarjeta")]), _vm._v(" "), _vm._l(item.cards, function (card) {
+    }, [_c("md-icon", [_vm._v("+")])], 1), _vm._v(" "), _vm._l(item.cards, function (card) {
       return _c("div", {
         key: card.id,
         staticClass: "col-md-12 mb-2"
