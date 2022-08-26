@@ -46,7 +46,7 @@ import { mapActions, mapState } from 'vuex'
             ...mapState('panel', ['editableCard'])
         },
         created () {
-            if (this.editable !== null) {
+            if (this.editableCard !== null) {
                 this.form = this.editableCard
             }
         },

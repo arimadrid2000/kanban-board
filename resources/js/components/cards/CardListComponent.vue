@@ -9,13 +9,19 @@
             <div v-for="item in panels" :key="item.id" class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <span>
-                            {{ item.name }}
-                        </span>
+                        <div class="row justify-content-between">
+                            <span class="md-display-1">
+                                {{ item.name }}
+                            </span>
+                            <span class="md-body-1">{{ item.cards.length }}</span>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div class="row justify-content-center">
-                            <button type="button" class="btn btn-link btn-sm" @click="addCard(item.id)">Agregar tarjeta</button>
+                        <div class="row justify-content-end">
+                            <md-button class="md-fab md-mini md-icon-button md-raised md-primary mb-4" @click="addCard(item.id)">
+                                <md-icon>+</md-icon>
+                            </md-button>
+
                             <div class="col-md-12 mb-2" v-for="card in item.cards" :key="card.id">
                                 <CardDetail :card="card" @click="editCard(card)" class="cursor-pointer"/>
                             </div>

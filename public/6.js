@@ -46,7 +46,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('panel', ['editableCard'])),
   created: function created() {
-    if (this.editable !== null) {
+    if (this.editableCard !== null) {
       this.form = this.editableCard;
     }
   },

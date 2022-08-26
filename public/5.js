@@ -31,7 +31,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      user: JSON.parse(localStorage.getItem('user'))
+      user: JSON.parse(localStorage.getItem('user')),
+      showPopUp: false
     };
   },
   props: {
@@ -106,27 +107,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee2);
       }))();
     },
-    changeCardPanel: function changeCardPanel($event) {
+    changeCardPanel: function changeCardPanel(id) {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-        var card, resp;
+        var card, selectedPanel;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 card = Object.assign(_this3.card);
-                card.panel_id = $event.target.value;
+                card.panel_id = id;
+                selectedPanel = _this3.panels.find(function (panel) {
+                  return panel.id === id;
+                });
+
+                if (selectedPanel.name === 'Done') {
+                  _this3.showPopUp = true;
+                }
+
                 delete card.created_at;
                 delete card.updated_at;
-                _context3.next = 6;
+                _context3.next = 8;
                 return _this3.updateCard(card);
 
-              case 6:
-                resp = _context3.sent;
+              case 8:
                 location.reload();
 
-              case 8:
+              case 9:
               case "end":
                 return _context3.stop();
             }
@@ -154,56 +162,62 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_c("div", {
-    staticClass: "card p-2"
-  }, [_c("h5", {
-    staticClass: "card-title"
-  }, [_vm._v("\n            " + _vm._s(_vm.card.name) + "\n        ")]), _vm._v(" "), _c("select", {
-    staticClass: "form-select",
+  return _c("div", [_c("md-card", {
+    staticClass: "md-primary",
     attrs: {
-      "aria-label": "panels select"
-    },
-    on: {
-      change: _vm.changeCardPanel
+      "md-with-hover": ""
     }
-  }, [_c("option", {
+  }, [_c("md-ripple", [_c("md-card-header", [_c("div", {
+    staticClass: "md-title"
+  }, [_vm._v(_vm._s(_vm.card.name))])]), _vm._v(" "), _c("md-card-actions", {
     attrs: {
-      selected: ""
+      "md-alignment": "space-between"
     }
-  }, [_vm._v("Mover")]), _vm._v(" "), _vm._l(_vm.panels, function (item) {
-    return _c("option", {
-      key: item.id,
-      domProps: {
-        value: item.id
-      }
-    }, [_vm._v(_vm._s(item.name))]);
-  })], 2), _vm._v(" "), _c("div", {
-    staticClass: "btn-group btn-group-sm",
-    attrs: {
-      role: "group",
-      "aria-label": "..."
-    }
-  }, [_c("button", {
-    staticClass: "btn btn-danger",
-    attrs: {
-      type: "button"
-    },
+  }, [_c("md-button", {
     on: {
       click: function click($event) {
         return _vm.remove(_vm.card.id);
       }
     }
-  }, [_vm._v("Eliminar")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-success",
-    attrs: {
-      type: "button"
-    },
+  }, [_vm._v("Eliminar")]), _vm._v(" "), _c("md-button", {
     on: {
       click: function click($event) {
         return _vm.edit(_vm.card.id);
       }
     }
-  }, [_vm._v("Editar")])])])]);
+  }, [_vm._v("Editar")]), _vm._v(" "), _c("md-menu", {
+    attrs: {
+      "md-size": "big",
+      "md-direction": "bottom-end"
+    }
+  }, [_c("md-button", {
+    attrs: {
+      "md-menu-trigger": ""
+    }
+  }, [_vm._v("\n                        Mover\n                    ")]), _vm._v(" "), _c("md-menu-content", _vm._l(_vm.panels, function (item) {
+    return _c("md-menu-item", {
+      key: item.id,
+      on: {
+        click: function click($event) {
+          return _vm.changeCardPanel(item.id);
+        }
+      }
+    }, [_c("span", [_vm._v(_vm._s(item.name))])]);
+  }), 1)], 1)], 1)], 1)], 1), _vm._v(" "), _c("md-dialog-alert", {
+    attrs: {
+      "md-active": _vm.showPopUp,
+      "md-content": "Felicitaciones por lograrlo!",
+      "md-confirm-text": "Cerrar"
+    },
+    on: {
+      "update:mdActive": function updateMdActive($event) {
+        _vm.showPopUp = $event;
+      },
+      "update:md-active": function updateMdActive($event) {
+        _vm.showPopUp = $event;
+      }
+    }
+  })], 1);
 };
 
 var staticRenderFns = [];
