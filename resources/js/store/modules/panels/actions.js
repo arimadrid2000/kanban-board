@@ -51,7 +51,13 @@ export const deleteCard = async ({ commit }, id) => {
 }
 
 export const updateCard = async ({ commit }, form) => {
+    const id = form.id
+    delete form.id
     const { data } = await axios.put(`api/cards/${id}`, form)
     // commit('setUser', data)
     return data
+}
+
+export const setCard = async ({commit}, card) => {
+    commit('setCard', card)
 }

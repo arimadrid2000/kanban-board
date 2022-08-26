@@ -40,30 +40,53 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         end_date: '',
         panel_id: null,
         user_id: null
-      }
+      },
+      showModal: true
     };
   },
-  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['createCard'])), {}, {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('panel', ['editableCard'])),
+  created: function created() {
+    if (this.editable !== null) {
+      this.form = this.editableCard;
+    }
+  },
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['createCard', 'updateCard', 'setCard'])), {}, {
     addCard: function addCard() {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var id, data;
+        var id;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                if (!(_this.editableCard === null)) {
+                  _context.next = 8;
+                  break;
+                }
+
                 id = _this.user.id;
                 _this.form.panel_id = _this.panelId;
                 _this.form.user_id = id;
-                _context.next = 5;
+                _context.next = 6;
                 return _this.createCard(_this.form);
 
-              case 5:
-                data = _context.sent;
-                console.log(data);
+              case 6:
+                _context.next = 12;
+                break;
 
-              case 7:
+              case 8:
+                _context.next = 10;
+                return _this.updateCard(_this.form);
+
+              case 10:
+                _context.next = 12;
+                return _this.setCard(null);
+
+              case 12:
+                location.reload();
+
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -92,6 +115,12 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.showModal,
+      expression: "showModal"
+    }],
     staticClass: "container mt-3"
   }, [_c("div", {
     staticClass: "row justify-content-center"

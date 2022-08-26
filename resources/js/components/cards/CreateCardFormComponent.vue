@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-3">
+    <div class="container mt-3" v-show="showModal">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <h3>Crear tarjeta</h3>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
     export default {
         props: {
             panelId: {
@@ -38,17 +38,31 @@ import { mapActions } from 'vuex'
                     end_date: '',
                     panel_id: null,
                     user_id: null
-                }
+                },
+                showModal: true
+            }
+        },
+        computed: {
+            ...mapState('panel', ['editableCard'])
+        },
+        created () {
+            if (this.editable !== null) {
+                this.form = this.editableCard
             }
         },
         methods: {
-            ...mapActions('panel', ['createCard']),
+            ...mapActions('panel', ['createCard', 'updateCard', 'setCard']),
             async addCard() {
-                const { id } = this.user
-                this.form.panel_id = this.panelId
-                this.form.user_id = id
-                const data = await this.createCard(this.form)
-                console.log(data)
+                if (this.editableCard === null) {
+                    const { id } = this.user
+                    this.form.panel_id = this.panelId
+                    this.form.user_id = id
+                    await this.createCard(this.form)
+                } else {
+                    await this.updateCard(this.form)
+                    await this.setCard(null)
+                }
+                location.reload()
             }
         }
     }

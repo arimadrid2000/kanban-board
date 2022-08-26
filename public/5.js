@@ -29,6 +29,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      user: JSON.parse(localStorage.getItem('user'))
+    };
+  },
   props: {
     card: {
       type: Object,
@@ -36,12 +41,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('panel', ['panels'])),
-  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['deleteCard'])), {}, {
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['deleteCard', 'updateCard', 'setCard'])), {}, {
     remove: function remove(id) {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var _yield$Swal$fire, isConfirmed, resp;
+        var _yield$Swal$fire, isConfirmed;
 
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
@@ -61,7 +66,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 isConfirmed = _yield$Swal$fire.isConfirmed;
 
                 if (!isConfirmed) {
-                  _context.next = 10;
+                  _context.next = 9;
                   break;
                 }
 
@@ -69,10 +74,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _this.deleteCard(id);
 
               case 8:
-                resp = _context.sent;
-                console.log(resp);
+                location.reload();
 
-              case 10:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -81,7 +85,54 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }))();
     },
     edit: function edit() {
-      this.$modal.show('example');
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return _this2.setCard(_this2.card);
+
+              case 2:
+                _this2.$modal.show('example');
+
+              case 3:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    changeCardPanel: function changeCardPanel($event) {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var card, resp;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                card = Object.assign(_this3.card);
+                card.panel_id = $event.target.value;
+                delete card.created_at;
+                delete card.updated_at;
+                _context3.next = 6;
+                return _this3.updateCard(card);
+
+              case 6:
+                resp = _context3.sent;
+                location.reload();
+
+              case 8:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
     }
   })
 });
@@ -107,7 +158,26 @@ var render = function render() {
     staticClass: "card p-2"
   }, [_c("h5", {
     staticClass: "card-title"
-  }, [_vm._v("\n            " + _vm._s(_vm.card.name) + "\n        ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n            " + _vm._s(_vm.card.name) + "\n        ")]), _vm._v(" "), _c("select", {
+    staticClass: "form-select",
+    attrs: {
+      "aria-label": "panels select"
+    },
+    on: {
+      change: _vm.changeCardPanel
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    }
+  }, [_vm._v("Mover")]), _vm._v(" "), _vm._l(_vm.panels, function (item) {
+    return _c("option", {
+      key: item.id,
+      domProps: {
+        value: item.id
+      }
+    }, [_vm._v(_vm._s(item.name))]);
+  })], 2), _vm._v(" "), _c("div", {
     staticClass: "btn-group btn-group-sm",
     attrs: {
       role: "group",
@@ -123,34 +193,17 @@ var render = function render() {
         return _vm.remove(_vm.card.id);
       }
     }
-  }, [_vm._v("Eliminar")]), _vm._v(" "), _c("div", {
-    staticClass: "btn-group btn-group-sm",
+  }, [_vm._v("Eliminar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-success",
     attrs: {
-      role: "group"
-    }
-  }, [_c("button", {
-    staticClass: "btn btn-primary dropdown-toggle",
-    attrs: {
-      id: "btnGroupDrop1",
-      type: "button",
-      "data-bs-toggle": "dropdown",
-      "aria-expanded": "false"
-    }
-  }, [_vm._v("\n                    Mover\n                ")]), _vm._v(" "), _c("ul", {
-    staticClass: "dropdown-menu",
-    attrs: {
-      "aria-labelledby": "btnGroupDrop1"
-    }
-  }, _vm._l(_vm.panels, function (item) {
-    return _c("li", {
-      key: item.id
-    }, [_c("a", {
-      staticClass: "dropdown-item",
-      attrs: {
-        href: "#"
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.edit(_vm.card.id);
       }
-    }, [_vm._v(_vm._s(item.name))])]);
-  }), 0)])])])]);
+    }
+  }, [_vm._v("Editar")])])])]);
 };
 
 var staticRenderFns = [];
