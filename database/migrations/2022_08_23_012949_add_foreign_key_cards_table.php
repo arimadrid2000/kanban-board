@@ -14,10 +14,10 @@ class AddForeignKeyCardsTable extends Migration
     public function up()
     {
         Schema::table('cards', function (Blueprint $table) {
-            $table->integer('user_id')->unsigned()->after('name');
+            $table->integer('user_id')->unsigned()->after('end_date');
             $table->foreign('user_id')
                  ->references('id')->on('users');
-            $table->integer('panel_id')->unsigned()->after('end_date');
+            $table->integer('panel_id')->unsigned()->after('user_id');
             $table->foreign('panel_id')
                  ->references('id')->on('panels');
         });
