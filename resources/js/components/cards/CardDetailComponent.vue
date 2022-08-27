@@ -1,25 +1,29 @@
 <template>
     <div>
-        <md-card class="md-primary" md-with-hover>
-            <md-ripple>
+        <md-card :class="[isLate ? 'md-accent' : 'md-primary']" md-with-hover>
+            <md-card-area>
                 <md-card-header>
-                    <div class="md-title">{{ card.name }}</div>
+                    <div class="md-title">{{ shortText }}</div>
+                    <div class="md-subhead">Fecha de expiracion: {{ card.end_date }}</div>
                 </md-card-header>
-                <md-card-actions md-alignment="space-between">
-                    <md-button @click="remove(card.id)">Eliminar</md-button>
-                    <md-button @click="edit(card.id)">Editar</md-button>
-                    <md-menu md-size="big" md-direction="bottom-end">
-                        <md-button md-menu-trigger>
-                            Mover
-                        </md-button>
-                        <md-menu-content>
-                            <md-menu-item v-for="item in panels" :key="item.id" @click="changeCardPanel(item.id)">
-                            <span>{{ item.name }}</span>
-                            </md-menu-item>
-                        </md-menu-content>
-                    </md-menu>
-                </md-card-actions>
-            </md-ripple>
+                <md-card-content v-show="isLate">
+                    Esta tarjeta ha expirado!
+                </md-card-content>
+            </md-card-area>
+            <md-card-actions md-alignment="space-between">
+                <md-button @click="remove(card.id)">Eliminar</md-button>
+                <md-button @click="edit(card.id)">Editar</md-button>
+                <md-menu md-size="big" md-direction="bottom-end">
+                    <md-button md-menu-trigger>
+                        Mover
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item v-for="item in panels" :key="item.id" @click="changeCardPanel(item.id)">
+                        <span>{{ item.name }}</span>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-card-actions>
         </md-card>
         <md-dialog-alert
             :md-active.sync="showPopUp"
@@ -36,7 +40,8 @@ export default {
     data() {
         return {
             user: JSON.parse(localStorage.getItem('user')),
-            showPopUp: false
+            showPopUp: false,
+            isLate: false
         }
     },
     props: {
@@ -46,10 +51,18 @@ export default {
         }
     },
     computed: {
-        ...mapState('panel', ['panels'])
+        ...mapState('panel', ['panels']),
+        shortText() {
+            return ( this.card.name.length > 20)
+                ? this.card.name.substring(0,20) + '...'
+                : this.card.name
+        },
+    },
+    created () {
+        this.verifyEndDate()
     },
     methods: {
-        ...mapActions('panel', ['deleteCard', 'updateCard', 'setCard']),
+        ...mapActions('panel', ['deleteCard', 'updateCard', 'setCard', 'loadData']),
         async remove(id) {
             console.log(id)
             const { isConfirmed } = await Swal.fire({
@@ -60,7 +73,7 @@ export default {
             });
             if (isConfirmed) {
                 await this.deleteCard(id)
-                location.reload()
+                await this.loadData()
             }
         },
         async edit() {
@@ -77,7 +90,14 @@ export default {
             delete card.created_at
             delete card.updated_at
             await this.updateCard(card)
-            location.reload()
+            await this.loadData()
+        },
+        verifyEndDate() {
+            const date = Date.parse(this.card.end_date)
+            const today = Date.now()
+            if (date < today) {
+                this.isLate = true
+            }
         }
     }
 }

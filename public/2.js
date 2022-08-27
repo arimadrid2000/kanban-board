@@ -45,6 +45,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ../shares/AuthButton.vue */ "./resources/js/components/shares/AuthButton.vue"));
     })
   },
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])('auth', ['currentUser'])), Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])('panel', ['panels'])),
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])('auth', ['login'])), {}, {
     onSubmit: function onSubmit() {
       var _this = this;

@@ -51,7 +51,7 @@ import { mapActions, mapState } from 'vuex'
             }
         },
         methods: {
-            ...mapActions('panel', ['createCard', 'updateCard', 'setCard']),
+            ...mapActions('panel', ['createCard', 'updateCard', 'setCard', 'loadData']),
             async addCard() {
                 if (this.editableCard === null) {
                     const { id } = this.user
@@ -62,7 +62,8 @@ import { mapActions, mapState } from 'vuex'
                     await this.updateCard(this.form)
                     await this.setCard(null)
                 }
-                location.reload()
+                await this.loadData()
+                this.$modal.hide('example')
             }
         }
     }

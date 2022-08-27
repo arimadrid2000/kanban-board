@@ -50,7 +50,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.form = this.editableCard;
     }
   },
-  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['createCard', 'updateCard', 'setCard'])), {}, {
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['createCard', 'updateCard', 'setCard', 'loadData'])), {}, {
     addCard: function addCard() {
       var _this = this;
 
@@ -84,9 +84,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _this.setCard(null);
 
               case 12:
-                location.reload();
+                _context.next = 14;
+                return _this.loadData();
 
-              case 13:
+              case 14:
+                _this.$modal.hide('example');
+
+              case 15:
               case "end":
                 return _context.stop();
             }

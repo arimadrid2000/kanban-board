@@ -32,7 +32,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       user: JSON.parse(localStorage.getItem('user')),
-      showPopUp: false
+      showPopUp: false,
+      isLate: false
     };
   },
   props: {
@@ -41,8 +42,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       "default": null
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('panel', ['panels'])),
-  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['deleteCard', 'updateCard', 'setCard'])), {}, {
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('panel', ['panels'])), {}, {
+    shortText: function shortText() {
+      return this.card.name.length > 20 ? this.card.name.substring(0, 20) + '...' : this.card.name;
+    }
+  }),
+  created: function created() {
+    this.verifyEndDate();
+  },
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('panel', ['deleteCard', 'updateCard', 'setCard', 'loadData'])), {}, {
     remove: function remove(id) {
       var _this = this;
 
@@ -67,7 +75,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 isConfirmed = _yield$Swal$fire.isConfirmed;
 
                 if (!isConfirmed) {
-                  _context.next = 9;
+                  _context.next = 10;
                   break;
                 }
 
@@ -75,9 +83,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _this.deleteCard(id);
 
               case 8:
-                location.reload();
+                _context.next = 10;
+                return _this.loadData();
 
-              case 9:
+              case 10:
               case "end":
                 return _context.stop();
             }
@@ -132,15 +141,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _this3.updateCard(card);
 
               case 8:
-                location.reload();
+                _context3.next = 10;
+                return _this3.loadData();
 
-              case 9:
+              case 10:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
       }))();
+    },
+    verifyEndDate: function verifyEndDate() {
+      var date = Date.parse(this.card.end_date);
+      var today = Date.now();
+
+      if (date < today) {
+        this.isLate = true;
+      }
     }
   })
 });
@@ -163,13 +181,22 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", [_c("md-card", {
-    staticClass: "md-primary",
+    "class": [_vm.isLate ? "md-accent" : "md-primary"],
     attrs: {
       "md-with-hover": ""
     }
-  }, [_c("md-ripple", [_c("md-card-header", [_c("div", {
+  }, [_c("md-card-area", [_c("md-card-header", [_c("div", {
     staticClass: "md-title"
-  }, [_vm._v(_vm._s(_vm.card.name))])]), _vm._v(" "), _c("md-card-actions", {
+  }, [_vm._v(_vm._s(_vm.shortText))]), _vm._v(" "), _c("div", {
+    staticClass: "md-subhead"
+  }, [_vm._v("Fecha de expiracion: " + _vm._s(_vm.card.end_date))])]), _vm._v(" "), _c("md-card-content", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.isLate,
+      expression: "isLate"
+    }]
+  }, [_vm._v("\n                Esta tarjeta ha expirado!\n            ")])], 1), _vm._v(" "), _c("md-card-actions", {
     attrs: {
       "md-alignment": "space-between"
     }
@@ -194,7 +221,7 @@ var render = function render() {
     attrs: {
       "md-menu-trigger": ""
     }
-  }, [_vm._v("\n                        Mover\n                    ")]), _vm._v(" "), _c("md-menu-content", _vm._l(_vm.panels, function (item) {
+  }, [_vm._v("\n                    Mover\n                ")]), _vm._v(" "), _c("md-menu-content", _vm._l(_vm.panels, function (item) {
     return _c("md-menu-item", {
       key: item.id,
       on: {
@@ -203,7 +230,7 @@ var render = function render() {
         }
       }
     }, [_c("span", [_vm._v(_vm._s(item.name))])]);
-  }), 1)], 1)], 1)], 1)], 1), _vm._v(" "), _c("md-dialog-alert", {
+  }), 1)], 1)], 1)], 1), _vm._v(" "), _c("md-dialog-alert", {
     attrs: {
       "md-active": _vm.showPopUp,
       "md-content": "Felicitaciones por lograrlo!",

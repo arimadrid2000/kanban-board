@@ -30,7 +30,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import Swal from 'sweetalert2'
 
     export default {
@@ -45,30 +45,35 @@ import Swal from 'sweetalert2'
         components: {
             AuthButton: defineAsyncComponent(() => import('../shares/AuthButton.vue')),
         },
+        computed: {
+            ...mapState('auth', ['currentUser']),
+            ...mapState('panel', ['panels'])
+        },
         methods: {
             ...mapActions('auth', ['login']),
             async onSubmit() {
                 const data = await this.login(this.form)
                 console.log(data)
                 if (data) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
 
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'acaba de iniciar sesion'
-                    })
-
-                    this.$router.push({name: 'card'})
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+    
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'acaba de iniciar sesion'
+                        })
+    
+                        this.$router.push({name: 'card'})
                 }
             },
             toRegisterForm() {
